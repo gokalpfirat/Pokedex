@@ -4,6 +4,8 @@ import CardList from "../CardList";
 import Card from "../Card";
 import Modal from "../Modal";
 import InfiniteScroll from "../InfiniteScroll";
+import PokemonLogo from "../../components/PokemonLogo";
+import PokemonSearchInput from "../../components/PokemonSearchInput";
 import "./style.css";
 
 const AsyncPokemonModal = lazy(() => import("../../components/PokemonModal"));
@@ -15,7 +17,8 @@ class App extends Component {
       pokemonList: [],
       pageNum: 0,
       isModalVisible: false,
-      selectedPokemonData: null
+      selectedPokemonData: null,
+      searchValue: null
     };
     this.loadRef = createRef();
   }
@@ -34,6 +37,13 @@ class App extends Component {
 
   closeModal = () => {
     this.setState({ isModalVisible: false });
+  };
+
+  onSearchInputChange = (value) => {
+    /*const filteredList = this.state.pokemonList.filter((pokemon) =>
+      pokemon.name.toLowerCase().includes(value.toLowerCase())
+    );
+    this.setState({ searchValue: value, pokemonList: filteredList });*/
   };
 
   async componentDidMount() {
@@ -56,6 +66,11 @@ class App extends Component {
       : "";
     return pokemonList.length ? (
       <div className="homepage">
+        <PokemonLogo />
+        <PokemonSearchInput
+          placeholder="Enter pokemon name you want to search"
+          onChange={this.onSearchInputChange}
+        />
         <InfiniteScroll loadRef={this.loadRef} callback={this.loadMore}>
           <CardList>{pokemonCards}</CardList>
           {isModalVisible ? (
@@ -70,7 +85,7 @@ class App extends Component {
           ) : (
             ""
           )}
-          <div ref={this.loadRef}></div>
+          {this.state.searchValue ? "" : <div ref={this.loadRef}></div>}
         </InfiniteScroll>
       </div>
     ) : (
