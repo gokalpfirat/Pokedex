@@ -1,0 +1,48 @@
+.card {
+  font-family: "ProximaNova-Regular", sans-serif;
+  border-radius: 0.625rem;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 300px;
+  min-height: 190px;
+  cursor: pointer;
+}
+
+.card__overlay {
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  width: 100%;
+}
+
+.card__image {
+  display: block;
+  margin: 0 auto;
+  min-height: 96px;
+}
+
+.card__title {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  color: #fff;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.card__id {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-align: center;
+}
+
+.card__content {
+  padding: 0.625rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

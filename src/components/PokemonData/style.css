@@ -1,0 +1,20 @@
+.pokemon_data {
+  color: #fff;
+  flex-grow: 1;
+}
+
+.pokemon_data__titles {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pokemon_data__title {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.25rem;
+  cursor: pointer;
+}
+
+.pokemon_data__title--selected {
+  border-bottom: 2px solid #fff;
+  color: rgba(255, 255, 255, 1);
+}
