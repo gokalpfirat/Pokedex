@@ -73,13 +73,14 @@ class App extends Component {
   };
 
   closeModal = () => {
-    this.setState({ isModalVisible: false });
+    this.setState({ isModalVisible: false, selectedPokemonData: null });
   };
 
   switchMode = () => {
     const { listType } = this.state;
-    // Reset Search Value
+    // Reset Search & Modal Values
     this.setState({ searchValue: "" });
+    this.setState({ isModalVisible: false, selectedPokemonData: null });
     if (listType === "all") {
       this.setState({ listType: "favourites" });
     } else {
