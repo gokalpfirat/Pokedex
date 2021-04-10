@@ -1,7 +1,7 @@
 import { Component, createRef, Fragment, lazy, Suspense } from "react";
 import { getPokemonList } from "../../api";
 import { POKEMON_PER_PAGE } from "../../config/constants";
-import CardList from "../CardList";
+import CardList from "../../components/CardList";
 import Card from "../Card";
 import ModalProvider from "../ModalProvider";
 import InfiniteScroll from "../InfiniteScroll";
@@ -15,6 +15,7 @@ import InformationBox from "../../components/InformationBox";
 
 import "./style.css";
 
+// Lazy load Modal, it won't be loaded until needed!
 const AsyncPokemonModal = lazy(() => import("../PokemonModal"));
 
 class App extends Component {
@@ -27,11 +28,13 @@ class App extends Component {
       searchValue: "",
       infiniteScrollLoading: false
     };
+    // This is used as Intersection Observer element
     this.loadRef = createRef();
   }
 
   static contextType = AppContext;
 
+  // Load Pokemons at Infinity Scroll
   loadMore = async () => {
     if (
       !this.state.infiniteScrollLoading &&
@@ -52,6 +55,7 @@ class App extends Component {
     }
   };
 
+  // Load Pokemons to cache if search is not found
   loadMorePokemonsToCache = async () => {
     if (!this.state.infiniteScrollLoading) {
       this.setState({ infiniteScrollLoading: true });
@@ -115,8 +119,10 @@ class App extends Component {
     const {
       loadedPokemons,
       favouritePokemons,
-      removeFavourites
+      removeFavourites,
+      totalCount
     } = this.context;
+
     // Filterin Lists
     const filteredList =
       listType === "all"
@@ -130,6 +136,7 @@ class App extends Component {
             .map((pokemon) => ({
               name: pokemon
             }));
+
     // Rendering Cards
     const pokemonCards = filteredList.length
       ? filteredList.map((pokemon) => {
@@ -144,6 +151,7 @@ class App extends Component {
           );
         })
       : "";
+
     // Rendering Controls
     const controls =
       listType === "all" ? (
@@ -154,6 +162,7 @@ class App extends Component {
           <Button onClick={removeFavourites}>Remove Favourites</Button>
         </>
       );
+
     return (
       <div className="homepage">
         <Logo />
@@ -182,17 +191,21 @@ class App extends Component {
             ) : (
               ""
             )}
-            <div ref={this.loadRef} style={{ textAlign: "center" }}>
-              <LoadingCircle
-                loadingState={
-                  !this.state.searchValue.length &&
-                  this.state.listType === "all"
-                }
-              />
-            </div>
+            {loadedPokemons.length !== totalCount ? (
+              <div ref={this.loadRef} style={{ textAlign: "center" }}>
+                <LoadingCircle
+                  loadingState={
+                    !this.state.searchValue.length &&
+                    this.state.listType === "all"
+                  }
+                />
+              </div>
+            ) : (
+              <InformationBox>You saw all Pokémons!</InformationBox>
+            )}
           </InfiniteScroll>
         ) : listType === "favourites" ? (
-          <InformationBox>You have no favourite pokemons!</InformationBox>
+          <InformationBox>You have no favourite pokémons!</InformationBox>
         ) : (
           ""
         )}

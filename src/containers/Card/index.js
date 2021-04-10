@@ -1,4 +1,3 @@
-import "./style.css";
 import { PureComponent, createRef } from "react";
 import { getPokemonDataFromName } from "../../api";
 import PokemonType from "../../components/PokemonType";
@@ -6,6 +5,7 @@ import FavouriteButton from "../FavouriteButton";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
 import AppContext from "../../context/AppContext";
+import "./style.css";
 
 class Card extends PureComponent {
   constructor() {
@@ -16,6 +16,8 @@ class Card extends PureComponent {
     this.cardRef = createRef();
   }
   static contextType = AppContext;
+
+  // If it's near viewport load pokemon data & show Ghost loader until it fetches
   loadPokemonData = (entries) => {
     if (!this.state.pokemonData) {
       const { pokemonName } = this.props;
@@ -63,6 +65,8 @@ class Card extends PureComponent {
       ? pokemonTypeColors[pokemonData.types[0]?.type?.name] ||
         pokemonTypeColors.normal
       : "#000";
+
+    // Gradient style depending on pokemon's main type
     const style = {
       background: `linear-gradient(180deg,rgba(255, 255, 255, 0) 0%,${typeColor} 100%)`
     };

@@ -1,7 +1,7 @@
 import { BASE_URL } from "../config/constants";
 
 /**
- *
+ * Get Pokemon List & Count
  * @param {number} [limit]
  * @param {number} [offset]
  * @returns {Object[]}
@@ -15,6 +15,7 @@ export const getPokemonList = async (limit = 40, page = 0) => {
 };
 
 /**
+ * Get Pokemon Types
  * @returns {Object[]}
  */
 export const getPokemonTypes = async () => {
@@ -23,6 +24,11 @@ export const getPokemonTypes = async () => {
   return types;
 };
 
+/**
+ * Get Pokemon Data using name
+ * @param {string} name
+ * @returns {Object}
+ */
 export const getPokemonDataFromName = async (name) => {
   if (!name) return;
   const response = await fetch(`${BASE_URL}/pokemon/${name}`);

@@ -4,10 +4,12 @@ import "./style.css";
 
 class ModalProvider extends Component {
   componentDidMount() {
+    // Body scroll lock active
     document.body.style.overflow = "hidden";
   }
 
   componentWillUnmount() {
+    // Body scroll lock deactivate
     document.body.style.overflow = "auto";
   }
 

@@ -6,12 +6,16 @@ const PokemonData = ({ currentTab, pokemonData }) => {
     var r = Math.floor(Math.random() * pokemonData.moves.length);
     if (randomMoveIndex.indexOf(r) === -1) randomMoveIndex.push(r);
   }
+
+  // This function escape the dashes and capitalize first letter of given move name
   const escapeName = (name) => {
     return name
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
+
+  // Pokemon Data Mappings
   const tabValues = {
     Details: {
       Height: `${pokemonData.height / 10} m`,
