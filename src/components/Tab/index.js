@@ -1,7 +1,7 @@
 const Tab = ({ tabName, onTabChange, selectedTab }) => (
   <div
-    className={`pokemon_data__title ${
-      selectedTab === tabName ? "pokemon_data__title--selected" : ""
+    className={`pokemon_tabs__title ${
+      selectedTab === tabName ? "pokemon_tabs__title--selected" : ""
     }`}
     onClick={() => onTabChange(tabName)}
   >

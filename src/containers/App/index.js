@@ -15,7 +15,7 @@ import InformationBox from "../../components/InformationBox";
 
 import "./style.css";
 
-const AsyncPokemonModal = lazy(() => import("../../components/PokemonModal"));
+const AsyncPokemonModal = lazy(() => import("../PokemonModal"));
 
 class App extends Component {
   constructor() {
