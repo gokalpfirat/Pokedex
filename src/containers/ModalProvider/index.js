@@ -2,7 +2,7 @@ import { Component } from "react";
 import ReactDOM from "react-dom";
 import "./style.css";
 
-class Modal extends Component {
+class ModalProvider extends Component {
   componentDidMount() {
     document.body.style.overflow = "hidden";
   }
@@ -35,4 +35,4 @@ class Modal extends Component {
     );
   }
 }
-export default Modal;
+export default ModalProvider;

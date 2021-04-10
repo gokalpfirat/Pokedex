@@ -1,10 +1,11 @@
 import "./style.css";
 
-const PokemonSearchInput = ({ placeholder, onChange }) => (
+const SearchInput = ({ placeholder, onChange, value }) => (
   <input
     className="search_input"
     placeholder={placeholder}
+    value={value}
     onChange={(e) => onChange(e.target.value)}
   />
 );
-export default PokemonSearchInput;
+export default SearchInput;
