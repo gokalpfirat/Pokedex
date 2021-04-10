@@ -73,6 +73,7 @@ class App extends Component {
   };
 
   showModal = (pokemonData) => {
+    if (!pokemonData) return;
     this.setState({ isModalVisible: true, selectedPokemonData: pokemonData });
   };
 

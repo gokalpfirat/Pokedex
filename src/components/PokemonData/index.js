@@ -2,7 +2,9 @@ import "./style.css";
 const PokemonData = ({ currentTab, pokemonData }) => {
   // Show random 3 moves every time
   const randomMoveIndex = [];
-  while (randomMoveIndex.length < 3) {
+  const randomMoveCount =
+    pokemonData.moves.length >= 3 ? 3 : pokemonData.moves.length;
+  while (randomMoveIndex.length < randomMoveCount) {
     var r = Math.floor(Math.random() * pokemonData.moves.length);
     if (randomMoveIndex.indexOf(r) === -1) randomMoveIndex.push(r);
   }

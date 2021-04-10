@@ -5,6 +5,7 @@ import FavouriteButton from "../FavouriteButton";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
 import AppContext from "../../context/AppContext";
+import LoadingCircle from "../../components/LoadingCircle";
 import "./style.css";
 
 class Card extends PureComponent {
@@ -73,16 +74,23 @@ class Card extends PureComponent {
     return (
       <div
         ref={this.cardRef}
-        className="card grow"
+        className={`card grow ${!pokemonData ? "card--inactive" : ""}`}
+        style={{ cursor: pokemonData ? "pointer" : "wait" }}
         onClick={() => this.props.onClickHandler(pokemonData)}
       >
         <div className="card__overlay" style={style}>
-          <img
-            loading="lazy"
-            className="card__image"
-            src={pokemonData ? pokemonData.sprites?.front_default : ""}
-            alt={""}
-          />
+          {pokemonData ? (
+            <img
+              loading="lazy"
+              className="card__image"
+              src={pokemonData ? pokemonData.sprites?.front_default : ""}
+              alt={""}
+            />
+          ) : (
+            <div style={{ textAlign: "center" }}>
+              <LoadingCircle width="96" height="96" />
+            </div>
+          )}
           <h3 className="card__title">{pokemonName}</h3>
           <h4 className="card__id">
             #{pokemonData ? leftFillNum(pokemonData.id, 4) : ""}
