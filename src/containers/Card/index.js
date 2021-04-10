@@ -1,5 +1,5 @@
 import "./style.css";
-import { Component, createRef } from "react";
+import { PureComponent, createRef } from "react";
 import { getPokemonImage } from "../../utils/mapper";
 import { getPokemonDataFromName } from "../../api";
 import PokemonType from "../../components/PokemonType";
@@ -8,7 +8,7 @@ import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
 import AppContext from "../../context/AppContext";
 
-class Card extends Component {
+class Card extends PureComponent {
   constructor() {
     super();
     this.state = {
@@ -18,24 +18,26 @@ class Card extends Component {
   }
   static contextType = AppContext;
   loadPokemonData = (entries) => {
-    const { pokemonName } = this.props;
-    entries.forEach(async (entry) => {
-      if (entry.isIntersecting) {
-        const pokemonCacheData = this.context.loadedPokemonData[pokemonName];
-        if (pokemonCacheData) {
-          this.setState({ pokemonData: pokemonCacheData });
-        } else {
-          const pokemonData = await getPokemonDataFromName(
-            this.props.pokemonName
-          );
-          this.context.addToLoadedPokemonData(
-            this.props.pokemonName,
-            pokemonData
-          );
-          this.setState({ pokemonData });
+    if (!this.state.pokemonData) {
+      const { pokemonName } = this.props;
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          const pokemonCacheData = this.context.loadedPokemonData[pokemonName];
+          if (pokemonCacheData) {
+            this.setState({ pokemonData: pokemonCacheData });
+          } else {
+            const pokemonData = await getPokemonDataFromName(
+              this.props.pokemonName
+            );
+            this.context.addToLoadedPokemonData(
+              this.props.pokemonName,
+              pokemonData
+            );
+            this.setState({ pokemonData });
+          }
         }
-      }
-    });
+      });
+    }
   };
 
   toggleFavourites = () => {
@@ -53,7 +55,7 @@ class Card extends Component {
     observer.observe(this.cardRef.current);
   }
   render() {
-    const { pokemonName } = this.props;
+    const { pokemonName, isFavourite } = this.props;
     const { pokemonData } = this.state;
     const typeColor = pokemonData
       ? pokemonTypeColors[pokemonData.types[0]?.type?.name] ||
@@ -62,7 +64,6 @@ class Card extends Component {
     const style = {
       background: `linear-gradient(180deg,rgba(255, 255, 255, 0) 0%,${typeColor} 100%)`
     };
-    const isFavourite = this.context.favouritePokemons.includes(pokemonName);
     return (
       <div
         ref={this.cardRef}
@@ -92,6 +93,7 @@ class Card extends Component {
             style={{ height: "26px" }}
             isFavourite={isFavourite}
             clickHandler={this.toggleFavourites}
+            dark
           />
         </div>
       </div>

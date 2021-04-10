@@ -84,13 +84,19 @@ class App extends Component {
   render() {
     const { pokemonList, isModalVisible } = this.state;
     const pokemonCards = pokemonList.length
-      ? pokemonList.map((pokemon, index) => (
-          <Card
-            pokemonName={pokemon.name}
-            key={pokemon.name}
-            onClickHandler={this.showModal}
-          />
-        ))
+      ? pokemonList.map((pokemon, index) => {
+          const isFavourite = this.context.favouritePokemons.includes(
+            pokemon.name
+          );
+          return (
+            <Card
+              pokemonName={pokemon.name}
+              key={pokemon.name}
+              onClickHandler={this.showModal}
+              isFavourite={isFavourite}
+            />
+          );
+        })
       : "";
     return (
       <div className="homepage">
@@ -108,6 +114,10 @@ class App extends Component {
                   <AsyncPokemonModal
                     pokemonData={this.state.selectedPokemonData}
                     onCloseButtonClick={this.closeModal}
+                    favouriteFn={this.context.toggleFavourites}
+                    isFavourite={this.context.favouritePokemons.includes(
+                      this.state.selectedPokemonData.name
+                    )}
                   />
                 </Suspense>
               </Modal>

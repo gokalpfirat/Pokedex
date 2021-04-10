@@ -1,40 +1,25 @@
-import { Component } from "react";
-import emptyHearth from "../../assets/dark/hearth.svg";
-import fullHearth from "../../assets/dark/full_hearth.svg";
+import { PureComponent } from "react";
 import "./style.css";
 
-class FavouriteButton extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      favouriteImg: this.props.isFavourite ? fullHearth : emptyHearth
-    };
-  }
-  mouseHover = () => {
-    const { favouriteImg } = this.state;
-    if (this.props.isFavourite) return;
-    if (favouriteImg === emptyHearth) {
-      this.setState({ favouriteImg: fullHearth });
-    } else {
-      this.setState({ favouriteImg: emptyHearth });
-    }
-  };
-
+class FavouriteButton extends PureComponent {
   clickFn = (e) => {
     e.stopPropagation();
     this.props.clickHandler();
   };
 
   render() {
-    const { favouriteImg } = this.state;
+    const { dark, isFavourite } = this.props;
+    const resultImg = isFavourite ? "full_hearth" : "hearth";
     return (
       <img
         style={this.props.style}
         alt="Hearth Icon"
-        src={favouriteImg}
-        className="favourite"
-        onMouseEnter={this.mouseHover}
-        onMouseLeave={this.mouseHover}
+        src={`assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
+        className={
+          "favourite " + this.props.className ? this.props.className : ""
+        }
+        onMouseEnter={this.mouseEnter}
+        onMouseLeave={this.mouseLeave}
         onClick={(e) => this.clickFn(e)}
       />
     );
