@@ -51,8 +51,11 @@ class Card extends PureComponent {
       threshold: 0.3
     };
 
-    const observer = new IntersectionObserver(this.loadPokemonData, options);
-    observer.observe(this.cardRef.current);
+    this.observer = new IntersectionObserver(this.loadPokemonData, options);
+    this.observer.observe(this.cardRef.current);
+  }
+  componentWillUnmount() {
+    this.observer.disconnect();
   }
   render() {
     const { pokemonName, isFavourite } = this.props;

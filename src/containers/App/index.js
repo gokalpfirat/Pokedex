@@ -9,6 +9,8 @@ import PokemonSearchInput from "../../components/PokemonSearchInput";
 import LoadMore from "../../components/LoadMore";
 import AppContext from "../../context/AppContext";
 import Button from "../../components/Button";
+import InformationBox from "../../components/InformationBox";
+
 import "./style.css";
 
 const AsyncPokemonModal = lazy(() => import("../../components/PokemonModal"));
@@ -174,13 +176,15 @@ class App extends Component {
         ) : (
           ""
         )}
-        {this.state.searchValue.length && this.state.listType === "all" ? (
-          <LoadMore
-            loadedCount={this.context.loadedPokemons.length}
-            totalCount={this.context.totalPokemons}
-            loadMore={this.loadMorePokemonsToCache}
-            isLoading={this.state.infiniteScrollLoading}
-          />
+        {searchValue.length && listType === "all" ? (
+          <InformationBox>
+            <LoadMore
+              loadedCount={this.context.loadedPokemons.length}
+              totalCount={this.context.totalPokemons}
+              loadMore={this.loadMorePokemonsToCache}
+              isLoading={this.state.infiniteScrollLoading}
+            />
+          </InformationBox>
         ) : (
           ""
         )}
