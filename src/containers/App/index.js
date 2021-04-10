@@ -1,14 +1,16 @@
 import { Component, createRef, Fragment, lazy, Suspense } from "react";
 import { getPokemonList } from "../../api";
+import { POKEMON_PER_PAGE } from "../../config/constants";
 import CardList from "../CardList";
 import Card from "../Card";
-import Modal from "../Modal";
+import ModalProvider from "../ModalProvider";
 import InfiniteScroll from "../InfiniteScroll";
-import PokemonLogo from "../../components/PokemonLogo";
-import PokemonSearchInput from "../../components/PokemonSearchInput";
+import Logo from "../../components/Logo";
+import SearchInput from "../../components/SearchInput";
 import LoadMore from "../../components/LoadMore";
 import AppContext from "../../context/AppContext";
 import Button from "../../components/Button";
+import LoadingCircle from "../../components/LoadingCircle";
 import InformationBox from "../../components/InformationBox";
 
 import "./style.css";
@@ -20,7 +22,6 @@ class App extends Component {
     super();
     this.state = {
       listType: "all",
-      pokemonList: [],
       isModalVisible: false,
       selectedPokemonData: null,
       searchValue: "",
@@ -28,7 +29,9 @@ class App extends Component {
     };
     this.loadRef = createRef();
   }
+
   static contextType = AppContext;
+
   loadMore = async () => {
     if (
       !this.state.infiniteScrollLoading &&
@@ -37,10 +40,12 @@ class App extends Component {
     ) {
       this.setState({ infiniteScrollLoading: true });
       const { addLoadedPokemons, loadedPageNum } = this.context;
-      const pokemons = await getPokemonList(40, loadedPageNum);
+      const { pokemons } = await getPokemonList(
+        POKEMON_PER_PAGE,
+        loadedPageNum
+      );
       addLoadedPokemons(pokemons, () => {
         this.setState({
-          pokemonList: this.context.loadedPokemons,
           infiniteScrollLoading: false
         });
       });
@@ -51,7 +56,10 @@ class App extends Component {
     if (!this.state.infiniteScrollLoading) {
       this.setState({ infiniteScrollLoading: true });
       const { addLoadedPokemons, loadedPageNum } = this.context;
-      const pokemons = await getPokemonList(40, loadedPageNum);
+      const { pokemons } = await getPokemonList(
+        POKEMON_PER_PAGE,
+        loadedPageNum
+      );
       addLoadedPokemons(pokemons, () => {
         this.setState({
           infiniteScrollLoading: false
@@ -70,6 +78,8 @@ class App extends Component {
 
   switchMode = () => {
     const { listType } = this.state;
+    // Reset Search Value
+    this.setState({ searchValue: "" });
     if (listType === "all") {
       this.setState({ listType: "favourites" });
     } else {
@@ -84,35 +94,45 @@ class App extends Component {
   };
 
   async componentDidMount() {
-    const { addLoadedPokemons, loadedPageNum } = this.context;
+    const {
+      addLoadedPokemons,
+      loadedPageNum,
+      setTotalPokemonCount
+    } = this.context;
     if (loadedPageNum === 0) {
-      const pokemons = await getPokemonList(40, this.state.pageNum);
-      addLoadedPokemons(pokemons, () => {
-        this.setState({ pokemonList: this.context.loadedPokemons });
-      });
-    } else {
-      this.setState({ pokemonList: this.context.loadedPokemons });
+      const { pokemons, count } = await getPokemonList(
+        POKEMON_PER_PAGE,
+        this.state.pageNum
+      );
+      setTotalPokemonCount(count);
+      addLoadedPokemons(pokemons);
     }
   }
 
   render() {
-    const { pokemonList, isModalVisible, listType, searchValue } = this.state;
-    // Search Results
+    const { isModalVisible, listType, searchValue } = this.state;
+    const {
+      loadedPokemons,
+      favouritePokemons,
+      removeFavourites
+    } = this.context;
+    // Filterin Lists
     const filteredList =
       listType === "all"
-        ? this.context.loadedPokemons.filter((pokemon) =>
-            pokemon.name.toLowerCase().includes(searchValue.toLowerCase())
-          )
-        : this.context.favouritePokemons
+        ? loadedPokemons.filter((pokemon) => {
+            return pokemon.name
+              .toLowerCase()
+              .includes(searchValue.toLowerCase());
+          })
+        : favouritePokemons
             .filter((pokemon) => pokemon.includes(searchValue.toLowerCase()))
             .map((pokemon) => ({
               name: pokemon
             }));
+    // Rendering Cards
     const pokemonCards = filteredList.length
       ? filteredList.map((pokemon) => {
-          const isFavourite = this.context.favouritePokemons.includes(
-            pokemon.name
-          );
+          const isFavourite = favouritePokemons.includes(pokemon.name);
           return (
             <Card
               pokemonName={pokemon.name}
@@ -130,34 +150,24 @@ class App extends Component {
       ) : (
         <>
           <Button onClick={this.switchMode}>All Pokemons</Button>
-          <Button onClick={this.context.removeFavourites}>
-            Remove Favourites
-          </Button>
+          <Button onClick={removeFavourites}>Remove Favourites</Button>
         </>
       );
     return (
       <div className="homepage">
-        <PokemonLogo />
+        <Logo />
         <div className="controls">{controls}</div>
-        <PokemonSearchInput
+        <SearchInput
           placeholder="Enter pokemon name you want to search"
           onChange={this.onSearchInputChange}
+          value={searchValue}
         />
-        {pokemonList.length ? (
+        {filteredList.length ? (
           <InfiniteScroll loadRef={this.loadRef} callback={this.loadMore}>
             <CardList>{pokemonCards}</CardList>
             {isModalVisible ? (
-              <Modal onOutsideClick={this.closeModal}>
-                <Suspense
-                  fallback={
-                    <img
-                      src="https://i.stack.imgur.com/kOnzy.gif"
-                      alt="Loading"
-                      width="100"
-                      height="100"
-                    />
-                  }
-                >
+              <ModalProvider onOutsideClick={this.closeModal}>
+                <Suspense fallback={<LoadingCircle />}>
                   <AsyncPokemonModal
                     pokemonData={this.state.selectedPokemonData}
                     onCloseButtonClick={this.closeModal}
@@ -167,12 +177,21 @@ class App extends Component {
                     )}
                   />
                 </Suspense>
-              </Modal>
+              </ModalProvider>
             ) : (
               ""
             )}
-            <div ref={this.loadRef}></div>
+            <div ref={this.loadRef} style={{ textAlign: "center" }}>
+              <LoadingCircle
+                loadingState={
+                  !this.state.searchValue.length &&
+                  this.state.listType === "all"
+                }
+              />
+            </div>
           </InfiniteScroll>
+        ) : listType === "favourites" ? (
+          <InformationBox>You have no favourite pokemons!</InformationBox>
         ) : (
           ""
         )}

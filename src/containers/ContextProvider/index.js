@@ -9,14 +9,20 @@ class ContextProvider extends Component {
       loadedPokemonData: {},
       favouritePokemons: [],
       loadedPageNum: 0,
-      totalPokemons: 1118,
+      totalPokemons: 0,
       addLoadedPokemons: this.addLoadedPokemons,
       increasePageNum: this.increasePageNum,
       addToLoadedPokemonData: this.addToLoadedPokemonData,
       toggleFavourites: this.toggleFavourites,
-      removeFavourites: this.removeFavourites
+      removeFavourites: this.removeFavourites,
+      setTotalPokemonCount: this.setTotalPokemonCount
     };
   }
+
+  setTotalPokemonCount = (count) => {
+    this.setState({ totalPokemons: count });
+  };
+
   addLoadedPokemons = (pokemons, callback) => {
     this.setState(
       (prevState) => ({

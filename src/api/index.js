@@ -10,8 +10,8 @@ export const getPokemonList = async (limit = 40, page = 0) => {
   const response = await fetch(
     `${BASE_URL}/pokemon?limit=${limit}&offset=${page * limit}`
   );
-  const { results: pokemons } = await response.json();
-  return pokemons;
+  const { results: pokemons, count } = await response.json();
+  return { pokemons, count };
 };
 
 /**

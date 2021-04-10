@@ -1,4 +1,4 @@
-import PokemonData from "../PokemonData";
+import Tabs from "../../containers/Tabs";
 import PokemonType from "../PokemonType";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
@@ -46,7 +46,7 @@ const PokemonModal = ({
             <PokemonType key={data.type.name} typeName={data.type.name} />
           ))}
       </div>
-      <PokemonData pokemonData={pokemonData} />
+      <Tabs pokemonData={pokemonData} />
     </div>
   );
 };

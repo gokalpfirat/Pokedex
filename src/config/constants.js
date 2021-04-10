@@ -1,6 +1,6 @@
 export const BASE_URL = "https://pokeapi.co/api/v2";
 
-export const POKEMON_PER_PAGE = 20;
+export const POKEMON_PER_PAGE = 40;
 
 export const pokemonTypeColors = {
   grass: "#7AC74C",
