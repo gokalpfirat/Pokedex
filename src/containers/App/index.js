@@ -1,5 +1,5 @@
-import { Component, createRef, lazy, Suspense } from "react";
-import { getPokemonList, getPokemonTypes } from "../../api";
+import { Component, createRef, Fragment, lazy, Suspense } from "react";
+import { getPokemonList } from "../../api";
 import CardList from "../CardList";
 import Card from "../Card";
 import Modal from "../Modal";
@@ -8,6 +8,7 @@ import PokemonLogo from "../../components/PokemonLogo";
 import PokemonSearchInput from "../../components/PokemonSearchInput";
 import LoadMore from "../../components/LoadMore";
 import AppContext from "../../context/AppContext";
+import Button from "../../components/Button";
 import "./style.css";
 
 const AsyncPokemonModal = lazy(() => import("../../components/PokemonModal"));
@@ -16,6 +17,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      listType: "all",
       pokemonList: [],
       isModalVisible: false,
       selectedPokemonData: null,
@@ -26,7 +28,11 @@ class App extends Component {
   }
   static contextType = AppContext;
   loadMore = async () => {
-    if (!this.state.infiniteScrollLoading && !this.state.searchValue.length) {
+    if (
+      !this.state.infiniteScrollLoading &&
+      !this.state.searchValue.length &&
+      this.state.listType === "all"
+    ) {
       this.setState({ infiniteScrollLoading: true });
       const { addLoadedPokemons, loadedPageNum } = this.context;
       const pokemons = await getPokemonList(40, loadedPageNum);
@@ -48,7 +54,6 @@ class App extends Component {
         this.setState({
           infiniteScrollLoading: false
         });
-        this.searchPokemon(this.state.searchValue);
       });
     }
   };
@@ -61,30 +66,48 @@ class App extends Component {
     this.setState({ isModalVisible: false });
   };
 
-  searchPokemon = (value) => {
-    const filteredList = this.context.loadedPokemons.filter((pokemon) =>
-      pokemon.name.toLowerCase().includes(value.toLowerCase())
-    );
-    this.setState({ searchValue: value, pokemonList: filteredList });
+  switchMode = () => {
+    const { listType } = this.state;
+    if (listType === "all") {
+      this.setState({ listType: "favourites" });
+    } else {
+      this.setState({
+        listType: "all"
+      });
+    }
   };
 
   onSearchInputChange = (value) => {
-    this.searchPokemon(value);
+    this.setState({ searchValue: value });
   };
 
   async componentDidMount() {
-    const { addLoadedPokemons } = this.context;
-    const pokemons = await getPokemonList(40, this.state.pageNum);
-    //const types = await getPokemonTypes();
-    //const data = await getPokemonData(1);
-    addLoadedPokemons(pokemons, () => {
+    const { addLoadedPokemons, loadedPageNum } = this.context;
+    if (loadedPageNum === 0) {
+      const pokemons = await getPokemonList(40, this.state.pageNum);
+      addLoadedPokemons(pokemons, () => {
+        this.setState({ pokemonList: this.context.loadedPokemons });
+      });
+    } else {
       this.setState({ pokemonList: this.context.loadedPokemons });
-    });
+    }
   }
+
   render() {
-    const { pokemonList, isModalVisible } = this.state;
-    const pokemonCards = pokemonList.length
-      ? pokemonList.map((pokemon, index) => {
+    const { pokemonList, isModalVisible, listType, searchValue } = this.state;
+    // Search Results
+    const filteredList =
+      listType === "all"
+        ? this.context.loadedPokemons.filter((pokemon) =>
+            pokemon.name.toLowerCase().includes(searchValue.toLowerCase())
+          )
+        : this.context.favouritePokemons
+            .filter((pokemon) => pokemon.includes(searchValue.toLowerCase()))
+            .map((pokemon) => ({
+              name: pokemon
+            }));
+    const pokemonCards = filteredList.length
+      ? filteredList.map((pokemon) => {
           const isFavourite = this.context.favouritePokemons.includes(
             pokemon.name
           );
@@ -98,9 +121,22 @@ class App extends Component {
           );
         })
       : "";
+    // Rendering Controls
+    const controls =
+      listType === "all" ? (
+        <Button onClick={this.switchMode}>My Pokemons</Button>
+      ) : (
+        <>
+          <Button onClick={this.switchMode}>All Pokemons</Button>
+          <Button onClick={this.context.removeFavourites}>
+            Remove Favourites
+          </Button>
+        </>
+      );
     return (
       <div className="homepage">
         <PokemonLogo />
+        <div className="controls">{controls}</div>
         <PokemonSearchInput
           placeholder="Enter pokemon name you want to search"
           onChange={this.onSearchInputChange}
@@ -129,7 +165,7 @@ class App extends Component {
         ) : (
           ""
         )}
-        {this.state.searchValue.length ? (
+        {this.state.searchValue.length && this.state.listType === "all" ? (
           <LoadMore
             loadedCount={this.context.loadedPokemons.length}
             totalCount={this.context.totalPokemons}

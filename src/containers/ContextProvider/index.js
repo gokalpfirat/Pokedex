@@ -13,7 +13,8 @@ class ContextProvider extends Component {
       addLoadedPokemons: this.addLoadedPokemons,
       increasePageNum: this.increasePageNum,
       addToLoadedPokemonData: this.addToLoadedPokemonData,
-      toggleFavourites: this.toggleFavourites
+      toggleFavourites: this.toggleFavourites,
+      removeFavourites: this.removeFavourites
     };
   }
   addLoadedPokemons = (pokemons, callback) => {
@@ -55,6 +56,10 @@ class ContextProvider extends Component {
         favouritePokemons: prevState.favouritePokemons.concat(pokemonName)
       }));
     }
+  };
+
+  removeFavourites = () => {
+    this.setState({ favouritePokemons: [] });
   };
 
   increasePageNum = () => {
