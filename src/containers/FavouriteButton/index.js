@@ -8,16 +8,18 @@ class FavouriteButton extends PureComponent {
   };
 
   render() {
-    const { dark, isFavourite } = this.props;
+    const { dark, isFavourite, style, className } = this.props;
     const resultImg = isFavourite ? "full_hearth" : "hearth";
     return (
       <img
-        style={this.props.style}
+        style={style}
         alt="Hearth Icon"
         src={`assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
-        className={
-          "favourite " + this.props.className ? this.props.className : ""
-        }
+        className={`favourite ${className} ${
+          resultImg === "full_hearth"
+            ? "favourite--active"
+            : "favourite--disabled"
+        }`}
         onMouseEnter={this.mouseEnter}
         onMouseLeave={this.mouseLeave}
         onClick={(e) => this.clickFn(e)}

@@ -1,0 +1,16 @@
+.favourite {
+  transition: all 0.2s ease-in;
+}
+
+.favourite:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.favourite--active {
+  opacity: 1;
+}
+
+.favourite--disabled {
+  opacity: 0.5;
+}
