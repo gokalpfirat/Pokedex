@@ -1,0 +1,20 @@
+.pokemon_data {
+  margin-top: 1rem;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.pokemon_data__col {
+  text-align: center;
+  margin-left: 1.25rem;
+}
+
+.pokemon_data__title {
+  opacity: 0.7;
+  margin-bottom: 0.25rem;
+}
+
+.pokemon_data__value {
+  font-weight: bold;
+}
