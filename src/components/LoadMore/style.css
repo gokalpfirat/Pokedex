@@ -13,8 +13,13 @@
   align-items: center;
 }
 
+.load_more strong {
+  display: block;
+}
+
 .load_more__button {
-  margin-top: 0.325rem;
+  display: block;
+  margin: 0.325rem auto 0;
   background: red;
   border-color: black;
   font-size: 0.8rem;

@@ -6,11 +6,13 @@ class ContextProvider extends Component {
     super();
     this.state = {
       loadedPokemons: [],
+      loadedPokemonData: {},
       favouritePokemons: [],
       loadedPageNum: 0,
       totalPokemons: 1118,
       addLoadedPokemons: this.addLoadedPokemons,
-      increasePageNum: this.increasePageNum
+      increasePageNum: this.increasePageNum,
+      addToLoadedPokemonData: this.addToLoadedPokemonData
     };
   }
   addLoadedPokemons = (pokemons, callback) => {
@@ -24,6 +26,16 @@ class ContextProvider extends Component {
         callback();
       }
     );
+  };
+
+  addToLoadedPokemonData = (pokemonName, pokemonData) => {
+    this.setState((prevState) => {
+      return {
+        loadedPokemonData: Object.assign({}, prevState.loadedPokemonData, {
+          [pokemonName]: pokemonData
+        })
+      };
+    });
   };
 
   increasePageNum = () => {

@@ -6,6 +6,7 @@ import PokemonType from "../../components/PokemonType";
 import FavouriteButton from "../FavouriteButton";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
+import AppContext from "../../context/AppContext";
 
 class Card extends Component {
   constructor() {
@@ -15,13 +16,24 @@ class Card extends Component {
     };
     this.cardRef = createRef();
   }
+  static contextType = AppContext;
   loadPokemonData = (entries) => {
+    const { pokemonName } = this.props;
     entries.forEach(async (entry) => {
       if (entry.isIntersecting) {
-        const pokemonData = await getPokemonDataFromName(
-          this.props.pokemonName
-        );
-        this.setState({ pokemonData });
+        const pokemonCacheData = this.context.loadedPokemonData[pokemonName];
+        if (pokemonCacheData) {
+          this.setState({ pokemonData: pokemonCacheData });
+        } else {
+          const pokemonData = await getPokemonDataFromName(
+            this.props.pokemonName
+          );
+          this.context.addToLoadedPokemonData(
+            this.props.pokemonName,
+            pokemonData
+          );
+          this.setState({ pokemonData });
+        }
       }
     });
   };
