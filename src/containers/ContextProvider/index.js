@@ -12,7 +12,8 @@ class ContextProvider extends Component {
       totalPokemons: 1118,
       addLoadedPokemons: this.addLoadedPokemons,
       increasePageNum: this.increasePageNum,
-      addToLoadedPokemonData: this.addToLoadedPokemonData
+      addToLoadedPokemonData: this.addToLoadedPokemonData,
+      toggleFavourites: this.toggleFavourites
     };
   }
   addLoadedPokemons = (pokemons, callback) => {
@@ -36,6 +37,24 @@ class ContextProvider extends Component {
         })
       };
     });
+  };
+
+  toggleFavourites = (pokemonName) => {
+    const favourites = this.state.favouritePokemons;
+    const index = favourites.indexOf(pokemonName);
+    if (index > -1) {
+      this.setState((prevState) => {
+        const cloneFavourites = [...prevState.favouritePokemons];
+        cloneFavourites.splice(index, 1);
+        return {
+          favouritePokemons: cloneFavourites
+        };
+      });
+    } else {
+      this.setState((prevState) => ({
+        favouritePokemons: prevState.favouritePokemons.concat(pokemonName)
+      }));
+    }
   };
 
   increasePageNum = () => {

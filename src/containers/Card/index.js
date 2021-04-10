@@ -37,6 +37,11 @@ class Card extends Component {
       }
     });
   };
+
+  toggleFavourites = () => {
+    const { pokemonName } = this.props;
+    this.context.toggleFavourites(pokemonName);
+  };
   componentDidMount() {
     const options = {
       root: null,
@@ -57,6 +62,7 @@ class Card extends Component {
     const style = {
       background: `linear-gradient(180deg,rgba(255, 255, 255, 0) 0%,${typeColor} 100%)`
     };
+    const isFavourite = this.context.favouritePokemons.includes(pokemonName);
     return (
       <div
         ref={this.cardRef}
@@ -82,7 +88,11 @@ class Card extends Component {
                 <PokemonType key={data.type.name} typeName={data.type.name} />
               ))}
           </div>
-          <FavouriteButton style={{ height: "26px" }} />
+          <FavouriteButton
+            style={{ height: "26px" }}
+            isFavourite={isFavourite}
+            clickHandler={this.toggleFavourites}
+          />
         </div>
       </div>
     );

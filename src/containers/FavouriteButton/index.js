@@ -12,6 +12,7 @@ class FavouriteButton extends Component {
   }
   mouseHover = () => {
     const { favouriteImg } = this.state;
+    if (this.props.isFavourite) return;
     if (favouriteImg === emptyHearth) {
       this.setState({ favouriteImg: fullHearth });
     } else {
@@ -21,6 +22,7 @@ class FavouriteButton extends Component {
 
   clickFn = (e) => {
     e.stopPropagation();
+    this.props.clickHandler();
   };
 
   render() {
