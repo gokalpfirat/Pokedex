@@ -51,7 +51,7 @@ class Card extends PureComponent {
     const options = {
       root: null,
       rootMargin: "200px",
-      threshold: 0.3
+      threshold: 0.2
     };
 
     this.observer = new IntersectionObserver(this.loadPokemonData, options);
