@@ -18,15 +18,22 @@ class FavouriteButton extends Component {
       this.setState({ favouriteImg: emptyHearth });
     }
   };
+
+  clickFn = (e) => {
+    e.stopPropagation();
+  };
+
   render() {
     const { favouriteImg } = this.state;
     return (
       <img
         style={this.props.style}
+        alt="Hearth Icon"
         src={favouriteImg}
         className="favourite"
         onMouseEnter={this.mouseHover}
         onMouseLeave={this.mouseHover}
+        onClick={(e) => this.clickFn(e)}
       />
     );
   }

@@ -6,6 +6,8 @@ import Modal from "../Modal";
 import InfiniteScroll from "../InfiniteScroll";
 import PokemonLogo from "../../components/PokemonLogo";
 import PokemonSearchInput from "../../components/PokemonSearchInput";
+import LoadMore from "../../components/LoadMore";
+import AppContext from "../../context/AppContext";
 import "./style.css";
 
 const AsyncPokemonModal = lazy(() => import("../../components/PokemonModal"));
@@ -15,20 +17,40 @@ class App extends Component {
     super();
     this.state = {
       pokemonList: [],
-      pageNum: 0,
       isModalVisible: false,
       selectedPokemonData: null,
-      searchValue: null
+      searchValue: "",
+      infiniteScrollLoading: false
     };
     this.loadRef = createRef();
   }
-
+  static contextType = AppContext;
   loadMore = async () => {
-    const pokemons = await getPokemonList(40, this.state.pageNum + 1);
-    this.setState((prevState) => ({
-      pokemonList: prevState.pokemonList.concat(pokemons),
-      pageNum: prevState.pageNum + 1
-    }));
+    if (!this.state.infiniteScrollLoading && !this.state.searchValue.length) {
+      this.setState({ infiniteScrollLoading: true });
+      const { addLoadedPokemons, loadedPageNum } = this.context;
+      const pokemons = await getPokemonList(40, loadedPageNum);
+      addLoadedPokemons(pokemons, () => {
+        this.setState({
+          pokemonList: this.context.loadedPokemons,
+          infiniteScrollLoading: false
+        });
+      });
+    }
+  };
+
+  loadMorePokemonsToCache = async () => {
+    if (!this.state.infiniteScrollLoading) {
+      this.setState({ infiniteScrollLoading: true });
+      const { addLoadedPokemons, loadedPageNum } = this.context;
+      const pokemons = await getPokemonList(40, loadedPageNum);
+      addLoadedPokemons(pokemons, () => {
+        this.setState({
+          infiniteScrollLoading: false
+        });
+        this.searchPokemon(this.state.searchValue);
+      });
+    }
   };
 
   showModal = (pokemonData) => {
@@ -39,18 +61,25 @@ class App extends Component {
     this.setState({ isModalVisible: false });
   };
 
-  onSearchInputChange = (value) => {
-    /*const filteredList = this.state.pokemonList.filter((pokemon) =>
+  searchPokemon = (value) => {
+    const filteredList = this.context.loadedPokemons.filter((pokemon) =>
       pokemon.name.toLowerCase().includes(value.toLowerCase())
     );
-    this.setState({ searchValue: value, pokemonList: filteredList });*/
+    this.setState({ searchValue: value, pokemonList: filteredList });
+  };
+
+  onSearchInputChange = (value) => {
+    this.searchPokemon(value);
   };
 
   async componentDidMount() {
+    const { addLoadedPokemons } = this.context;
     const pokemons = await getPokemonList(40, this.state.pageNum);
     //const types = await getPokemonTypes();
     //const data = await getPokemonData(1);
-    this.setState({ pokemonList: pokemons });
+    addLoadedPokemons(pokemons, () => {
+      this.setState({ pokemonList: this.context.loadedPokemons });
+    });
   }
   render() {
     const { pokemonList, isModalVisible } = this.state;
@@ -58,38 +87,49 @@ class App extends Component {
       ? pokemonList.map((pokemon, index) => (
           <Card
             pokemonName={pokemon.name}
-            pokemonID={index}
             key={pokemon.name}
             onClickHandler={this.showModal}
           />
         ))
       : "";
-    return pokemonList.length ? (
+    return (
       <div className="homepage">
         <PokemonLogo />
         <PokemonSearchInput
           placeholder="Enter pokemon name you want to search"
           onChange={this.onSearchInputChange}
         />
-        <InfiniteScroll loadRef={this.loadRef} callback={this.loadMore}>
-          <CardList>{pokemonCards}</CardList>
-          {isModalVisible ? (
-            <Modal onOutsideClick={this.closeModal}>
-              <Suspense fallback={""}>
-                <AsyncPokemonModal
-                  pokemonData={this.state.selectedPokemonData}
-                  onCloseButtonClick={this.closeModal}
-                />
-              </Suspense>
-            </Modal>
-          ) : (
-            ""
-          )}
-          {this.state.searchValue ? "" : <div ref={this.loadRef}></div>}
-        </InfiniteScroll>
+        {pokemonList.length ? (
+          <InfiniteScroll loadRef={this.loadRef} callback={this.loadMore}>
+            <CardList>{pokemonCards}</CardList>
+            {isModalVisible ? (
+              <Modal onOutsideClick={this.closeModal}>
+                <Suspense fallback={""}>
+                  <AsyncPokemonModal
+                    pokemonData={this.state.selectedPokemonData}
+                    onCloseButtonClick={this.closeModal}
+                  />
+                </Suspense>
+              </Modal>
+            ) : (
+              ""
+            )}
+            <div ref={this.loadRef}></div>
+          </InfiniteScroll>
+        ) : (
+          ""
+        )}
+        {this.state.searchValue.length ? (
+          <LoadMore
+            loadedCount={this.context.loadedPokemons.length}
+            totalCount={this.context.totalPokemons}
+            loadMore={this.loadMorePokemonsToCache}
+            isLoading={this.state.infiniteScrollLoading}
+          />
+        ) : (
+          ""
+        )}
       </div>
-    ) : (
-      ""
     );
   }
 }

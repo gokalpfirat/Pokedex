@@ -1,5 +1,5 @@
 import "./style.css";
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { getPokemonImage } from "../../utils/mapper";
 import { getPokemonDataFromName } from "../../api";
 import PokemonType from "../../components/PokemonType";
@@ -13,13 +13,30 @@ class Card extends Component {
     this.state = {
       pokemonData: null
     };
+    this.cardRef = createRef();
   }
-  async componentDidMount() {
-    const pokemonData = await getPokemonDataFromName(this.props.pokemonName);
-    this.setState({ pokemonData });
+  loadPokemonData = (entries) => {
+    entries.forEach(async (entry) => {
+      if (entry.isIntersecting) {
+        const pokemonData = await getPokemonDataFromName(
+          this.props.pokemonName
+        );
+        this.setState({ pokemonData });
+      }
+    });
+  };
+  componentDidMount() {
+    const options = {
+      root: null,
+      rootMargin: "200px",
+      threshold: 0.3
+    };
+
+    const observer = new IntersectionObserver(this.loadPokemonData, options);
+    observer.observe(this.cardRef.current);
   }
   render() {
-    const { pokemonName, pokemonID } = this.props;
+    const { pokemonName } = this.props;
     const { pokemonData } = this.state;
     const typeColor = pokemonData
       ? pokemonTypeColors[pokemonData.types[0]?.type?.name] ||
@@ -30,6 +47,7 @@ class Card extends Component {
     };
     return (
       <div
+        ref={this.cardRef}
         className="card grow"
         onClick={() => this.props.onClickHandler(pokemonData)}
       >
@@ -38,9 +56,12 @@ class Card extends Component {
             loading="lazy"
             className="card__image"
             src={pokemonData ? getPokemonImage(pokemonData) : ""}
+            alt={""}
           />
           <h3 className="card__title">{pokemonName}</h3>
-          <h4 className="card__id">#{leftFillNum(pokemonID, 4)}</h4>
+          <h4 className="card__id">
+            #{pokemonData ? leftFillNum(pokemonData.id, 4) : ""}
+          </h4>
         </div>
         <div className="card__content">
           <div>

@@ -2,12 +2,15 @@ import { StrictMode } from "react";
 import ReactDOM from "react-dom";
 
 import App from "./containers/App";
-import './styles.css'
+import ContextProvider from "./containers/ContextProvider";
+import "./styles.css";
 
 const rootElement = document.getElementById("root");
 ReactDOM.render(
   <StrictMode>
-    <App />
+    <ContextProvider>
+      <App />
+    </ContextProvider>
   </StrictMode>,
   rootElement
 );

@@ -6,7 +6,7 @@ import { BASE_URL } from "../config/constants";
  * @param {number} [offset]
  * @returns {Object[]}
  */
-export const getPokemonList = async (limit = 20, page = 0) => {
+export const getPokemonList = async (limit = 40, page = 0) => {
   const response = await fetch(
     `${BASE_URL}/pokemon?limit=${limit}&offset=${page * limit}`
   );

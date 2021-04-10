@@ -4,7 +4,6 @@ class InfiniteScroll extends Component {
   cb = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        console.log(entry.intersectionRatio);
         this.props.callback();
       }
     });
@@ -13,7 +12,7 @@ class InfiniteScroll extends Component {
     const options = {
       root: null,
       rootMargin: "600px",
-      threshold: 1
+      threshold: 0
     };
 
     const observer = new IntersectionObserver(this.cb, options);

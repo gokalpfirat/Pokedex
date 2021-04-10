@@ -1,0 +1,28 @@
+.load_more {
+  background: white;
+  border-radius: 1rem;
+  padding: 0.3rem;
+  text-align: center;
+  border: 1px dashed black;
+  min-height: 60px;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.load_more__button {
+  margin-top: 0.325rem;
+  background: red;
+  border-color: black;
+  font-size: 0.8rem;
+  color: white;
+  outline: none;
+}
+
+.load_more__button:disabled,
+.load_more__button[disabled] {
+  opacity: 0.5;
+}
