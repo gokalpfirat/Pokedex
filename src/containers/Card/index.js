@@ -4,6 +4,7 @@ import PokemonType from "../../components/PokemonType";
 import FavouriteButton from "../FavouriteButton";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
+import { escapeName } from "../../utils/string";
 import AppContext from "../../context/AppContext";
 import LoadingCircle from "../../components/LoadingCircle";
 import "./style.css";
@@ -91,7 +92,7 @@ class Card extends PureComponent {
               <LoadingCircle width="96" height="96" />
             </div>
           )}
-          <h3 className="card__title">{pokemonName}</h3>
+          <h3 className="card__title">{escapeName(pokemonName)}</h3>
           <h4 className="card__id">
             #{pokemonData ? leftFillNum(pokemonData.id, 4) : ""}
           </h4>

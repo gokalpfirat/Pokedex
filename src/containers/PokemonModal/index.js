@@ -4,6 +4,7 @@ import PokemonType from "../../components/PokemonType";
 import PokemonData from "../../components/PokemonData";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
+import { escapeName } from "../../utils/string";
 import FavouriteButton from "../FavouriteButton";
 import "./style.css";
 
@@ -51,7 +52,7 @@ class PokemonModal extends Component {
         />
         <div className="pokemon_modal__main_info">
           <p className="pokemon_modal__id">#{leftFillNum(pokemonData.id, 4)}</p>
-          <p className="pokemon_modal__name">{pokemonData.name}</p>
+          <p className="pokemon_modal__name">{escapeName(pokemonData.name)}</p>
         </div>
         <div className="pokemon_modal__types">
           {pokemonData &&
@@ -59,7 +60,11 @@ class PokemonModal extends Component {
               <PokemonType key={data.type.name} typeName={data.type.name} />
             ))}
         </div>
-        <Tabs currentTab={this.state.currentTab} onChangeTab={this.changeTab} />
+        <Tabs
+          currentTab={this.state.currentTab}
+          onChangeTab={this.changeTab}
+          pokemonData={pokemonData}
+        />
         <PokemonData
           pokemonData={pokemonData}
           currentTab={this.state.currentTab}

@@ -1,3 +1,4 @@
+import { escapeName } from "../../utils/string";
 import "./style.css";
 const PokemonData = ({ currentTab, pokemonData }) => {
   // Show random 3 moves every time
@@ -8,14 +9,6 @@ const PokemonData = ({ currentTab, pokemonData }) => {
     var r = Math.floor(Math.random() * pokemonData.moves.length);
     if (randomMoveIndex.indexOf(r) === -1) randomMoveIndex.push(r);
   }
-
-  // This function escape the dashes and capitalize first letter of given move name
-  const escapeName = (name) => {
-    return name
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
 
   // Pokemon Data Mappings
   const tabValues = {
@@ -31,8 +24,10 @@ const PokemonData = ({ currentTab, pokemonData }) => {
       "Sp. Atk": pokemonData.stats[3].base_stat,
       "Sp. Def": pokemonData.stats[4].base_stat,
       Speed: pokemonData.stats[5].base_stat
-    },
-    Moves: {
+    }
+  };
+  if (pokemonData.moves.length) {
+    tabValues.Moves = {
       "Random Move 1": escapeName(
         pokemonData.moves[randomMoveIndex[0]].move.name
       ),
@@ -43,8 +38,8 @@ const PokemonData = ({ currentTab, pokemonData }) => {
         pokemonData.moves[randomMoveIndex[2]].move.name
       ),
       "Total Move": pokemonData.moves.length
-    }
-  };
+    };
+  }
   return (
     <div className="pokemon_data">
       {Object.keys(tabValues[currentTab]).map((title) => (

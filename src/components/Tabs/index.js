@@ -1,7 +1,7 @@
 import Tab from "../../components/Tab";
 import "./style.css";
 
-const Tabs = ({ currentTab, onChangeTab }) => (
+const Tabs = ({ currentTab, onChangeTab, pokemonData }) => (
   <div className="pokemon_tabs">
     <div className="pokemon_tabs__titles">
       <Tab
@@ -9,7 +9,15 @@ const Tabs = ({ currentTab, onChangeTab }) => (
         onTabChange={onChangeTab}
         selectedTab={currentTab}
       />
-      <Tab tabName="Moves" onTabChange={onChangeTab} selectedTab={currentTab} />
+      {pokemonData.moves.length ? (
+        <Tab
+          tabName="Moves"
+          onTabChange={onChangeTab}
+          selectedTab={currentTab}
+        />
+      ) : (
+        ""
+      )}
       <Tab tabName="Stats" onTabChange={onChangeTab} selectedTab={currentTab} />
     </div>
   </div>
