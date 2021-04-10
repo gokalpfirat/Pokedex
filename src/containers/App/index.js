@@ -146,10 +146,10 @@ class App extends Component {
     // Rendering Controls
     const controls =
       listType === "all" ? (
-        <Button onClick={this.switchMode}>My Pokemons</Button>
+        <Button onClick={this.switchMode}>My Pokémons</Button>
       ) : (
         <>
-          <Button onClick={this.switchMode}>All Pokemons</Button>
+          <Button onClick={this.switchMode}>All Pokémons</Button>
           <Button onClick={removeFavourites}>Remove Favourites</Button>
         </>
       );

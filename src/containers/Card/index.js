@@ -1,6 +1,5 @@
 import "./style.css";
 import { PureComponent, createRef } from "react";
-import { getPokemonImage } from "../../utils/mapper";
 import { getPokemonDataFromName } from "../../api";
 import PokemonType from "../../components/PokemonType";
 import FavouriteButton from "../FavouriteButton";
@@ -77,7 +76,7 @@ class Card extends PureComponent {
           <img
             loading="lazy"
             className="card__image"
-            src={pokemonData ? getPokemonImage(pokemonData) : ""}
+            src={pokemonData ? pokemonData.sprites?.front_default : ""}
             alt={""}
           />
           <h3 className="card__title">{pokemonName}</h3>
