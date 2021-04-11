@@ -15,6 +15,7 @@ API by [PokéAPI](http://pokeapi.co/)
 * Add/Remove Pokémons to your favourites list
 * Check details(ex. weight), moves, stats in modal
 * Mobile friendly responsive design
+* Favourite Pokemon Details (Count, Types...)
 
 ## Techniques
 * Infinite Scroll using native Web API [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
