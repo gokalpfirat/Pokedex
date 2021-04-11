@@ -1,5 +1,8 @@
 # Pokedex
 Pokedex created with **only React**, without any dependencies & libraries. Written with Class & Functional components, _not with hooks_
+CSS written in BEM(Block, Element and Modifier) Methodology. **Preprocessors(Ex. Sass) not used**
+
+Budnle size *~44kb*
 
 API by [PokéAPI](http://pokeapi.co/) 
 
