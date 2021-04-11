@@ -25,6 +25,7 @@ body {
   background-size: cover;
   background-position: center;
   overflow-x: hidden;
+  padding-bottom: 2rem;
 }
 
 .grow {
