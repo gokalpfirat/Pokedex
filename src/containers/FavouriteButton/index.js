@@ -10,11 +10,12 @@ class FavouriteButton extends PureComponent {
   render() {
     const { dark, isFavourite, style, className } = this.props;
     const resultImg = isFavourite ? "full_hearth" : "hearth";
+    const base = process.env.PUBLIC_URL ? process.env.PUBLIC_URL : "";
     return (
       <img
         style={style}
         alt="Hearth Icon"
-        src={`${process.env.PUBLIC_URL}/assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
+        src={`${base}/assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
         className={`favourite ${className} ${
           resultImg === "full_hearth"
             ? "favourite--active"

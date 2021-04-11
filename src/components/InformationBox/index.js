@@ -4,4 +4,5 @@ const InformationBox = ({ children, ...props }) => (
     {children}
   </div>
 );
+
 export default InformationBox;

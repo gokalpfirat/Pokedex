@@ -1,23 +1,29 @@
-import { PureComponent, createRef } from "react";
+import { PureComponent, createRef, lazy, Suspense } from "react";
 import { getPokemonDataFromName } from "../../api";
 import PokemonType from "../../components/PokemonType";
 import FavouriteButton from "../FavouriteButton";
 import { pokemonTypeColors } from "../../config/constants";
 import { leftFillNum } from "../../utils/number";
 import { escapeName } from "../../utils/string";
-import AppContext from "../../context/AppContext";
+import PokemonContext from "../../context/PokemonContext";
 import LoadingCircle from "../../components/LoadingCircle";
+import ModalProvider from "../ModalProvider";
+
 import "./style.css";
+
+// Lazy load Modal, it won't be loaded until needed!
+const AsyncPokemonModal = lazy(() => import("../PokemonModal"));
 
 class Card extends PureComponent {
   constructor() {
     super();
     this.state = {
-      pokemonData: null
+      pokemonData: null,
+      isModalVisible: false
     };
     this.cardRef = createRef();
   }
-  static contextType = AppContext;
+  static contextType = PokemonContext;
 
   // If it's near viewport load pokemon data & show Ghost loader until it fetches
   loadPokemonData = (entries) => {
@@ -45,8 +51,19 @@ class Card extends PureComponent {
 
   toggleFavourites = () => {
     const { pokemonName } = this.props;
+    if (!this.state.pokemonData) return;
     this.context.toggleFavourites(pokemonName);
   };
+
+  showModal = (pokemonData) => {
+    if (!pokemonData) return;
+    this.setState({ isModalVisible: true, selectedPokemonData: pokemonData });
+  };
+
+  closeModal = () => {
+    this.setState({ isModalVisible: false, selectedPokemonData: null });
+  };
+
   componentDidMount() {
     const options = {
       root: null,
@@ -62,7 +79,7 @@ class Card extends PureComponent {
   }
   render() {
     const { pokemonName, isFavourite } = this.props;
-    const { pokemonData } = this.state;
+    const { pokemonData, isModalVisible } = this.state;
     const typeColor = pokemonData
       ? pokemonTypeColors[pokemonData.types[0]?.type?.name] ||
         pokemonTypeColors.normal
@@ -72,13 +89,32 @@ class Card extends PureComponent {
     const style = {
       background: `linear-gradient(180deg,rgba(255, 255, 255, 0) 0%,${typeColor} 100%)`
     };
+
+    const modal =
+      isModalVisible && pokemonData ? (
+        <ModalProvider onOutsideClick={this.closeModal}>
+          <Suspense fallback={<LoadingCircle />}>
+            <AsyncPokemonModal
+              pokemonData={pokemonData}
+              onCloseButtonClick={this.closeModal}
+              favouriteFn={this.toggleFavourites}
+              isFavourite={this.context.favouritePokemons.includes(
+                pokemonData.name
+              )}
+            />
+          </Suspense>
+        </ModalProvider>
+      ) : (
+        ""
+      );
     return (
       <div
         ref={this.cardRef}
         className={`card grow ${!pokemonData ? "card--inactive" : ""}`}
         style={{ cursor: pokemonData ? "pointer" : "wait" }}
-        onClick={() => this.props.onClickHandler(pokemonData)}
+        onClick={this.showModal}
       >
+        {modal}
         <div className="card__overlay" style={style}>
           {pokemonData ? (
             <img

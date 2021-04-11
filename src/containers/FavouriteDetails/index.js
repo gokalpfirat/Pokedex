@@ -1,10 +1,10 @@
 import { Component } from "react";
 import PokemonType from "../../components/PokemonType";
-import AppContext from "../../context/AppContext";
+import PokemonContext from "../../context/PokemonContext";
 import "./style.css";
 
 class FavouriteDetails extends Component {
-  static contextType = AppContext;
+  static contextType = PokemonContext;
   render() {
     const { favouritePokemons, getPokemonType } = this.context;
     const pokemonTypes = {};
