@@ -2,6 +2,6 @@
   display: flex;
   flex-wrap: wrap;
   max-width: 1850px;
-  margin: 0 auto 1.5rem;
+  margin: 0 auto;
   justify-content: center;
 }

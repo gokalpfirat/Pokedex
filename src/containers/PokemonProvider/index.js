@@ -1,7 +1,7 @@
-import AppContext from "../../context/AppContext";
+import PokemonContext from "../../context/PokemonContext";
 import { Component } from "react";
 
-class ContextProvider extends Component {
+class PokemonProvider extends Component {
   constructor() {
     super();
     this.state = {
@@ -84,10 +84,10 @@ class ContextProvider extends Component {
   };
   render() {
     return (
-      <AppContext.Provider value={this.state}>
+      <PokemonContext.Provider value={this.state}>
         {this.props.children}
-      </AppContext.Provider>
+      </PokemonContext.Provider>
     );
   }
 }
-export default ContextProvider;
+export default PokemonProvider;
