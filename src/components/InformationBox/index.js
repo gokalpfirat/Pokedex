@@ -1,5 +1,7 @@
 import "./style.css";
-const InformationBox = ({ children }) => (
-  <div className="information_box">{children}</div>
+const InformationBox = ({ children, ...props }) => (
+  <div className="information_box" {...props}>
+    {children}
+  </div>
 );
 export default InformationBox;

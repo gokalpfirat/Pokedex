@@ -12,6 +12,7 @@ import AppContext from "../../context/AppContext";
 import Button from "../../components/Button";
 import LoadingCircle from "../../components/LoadingCircle";
 import InformationBox from "../../components/InformationBox";
+import FavouriteDetails from "../FavouriteDetails";
 
 import "./style.css";
 
@@ -160,7 +161,20 @@ class App extends Component {
       ) : (
         <>
           <Button onClick={this.switchMode}>All Pokémons</Button>
-          <Button onClick={removeFavourites}>Remove Favourites</Button>
+          {favouritePokemons.length ? (
+            <>
+              <Button onClick={removeFavourites}>Remove Favourites</Button>
+              <Button
+                onClick={() => {
+                  window.location.href = "#favouriteDetails";
+                }}
+              >
+                Favourite Details
+              </Button>
+            </>
+          ) : (
+            ""
+          )}
         </>
       );
 
@@ -169,7 +183,7 @@ class App extends Component {
         <Logo />
         <div className="controls">{controls}</div>
         <SearchInput
-          placeholder="Enter pokemon name you want to search"
+          placeholder="Enter Pokémon name you want to search"
           onChange={this.onSearchInputChange}
           value={searchValue}
         />
@@ -206,7 +220,11 @@ class App extends Component {
             )}
           </InfiniteScroll>
         ) : listType === "favourites" ? (
-          <InformationBox>You have no favourite pokémons!</InformationBox>
+          <InformationBox>
+            {searchValue.length
+              ? "No pokémons found at your favourites!"
+              : "You have no favourite pokémons!"}
+          </InformationBox>
         ) : (
           ""
         )}
@@ -218,6 +236,12 @@ class App extends Component {
               loadMore={this.loadMorePokemonsToCache}
               isLoading={this.state.infiniteScrollLoading}
             />
+          </InformationBox>
+        ) : listType === "favourites" &&
+          favouritePokemons.length &&
+          !searchValue.length ? (
+          <InformationBox id="favouriteDetails">
+            <FavouriteDetails />
           </InformationBox>
         ) : (
           ""

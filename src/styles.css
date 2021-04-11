@@ -13,6 +13,10 @@
   font-style: normal;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "ProximaNova-Regular", sans-serif;
   background-image: url("https://i.pinimg.com/originals/73/0f/1c/730f1c29b41c08ad82e1433a0ef218d1.jpg");

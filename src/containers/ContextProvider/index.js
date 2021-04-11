@@ -15,7 +15,8 @@ class ContextProvider extends Component {
       addToLoadedPokemonData: this.addToLoadedPokemonData,
       toggleFavourites: this.toggleFavourites,
       removeFavourites: this.removeFavourites,
-      setTotalPokemonCount: this.setTotalPokemonCount
+      setTotalPokemonCount: this.setTotalPokemonCount,
+      getPokemonType: this.getPokemonType
     };
   }
 
@@ -44,6 +45,14 @@ class ContextProvider extends Component {
         })
       };
     });
+  };
+
+  getPokemonType = (pokemonName) => {
+    const pokemon = this.state.loadedPokemonData[pokemonName];
+    if (pokemon) {
+      return pokemon.types[0].type.name;
+    }
+    return false;
   };
 
   toggleFavourites = (pokemonName) => {
