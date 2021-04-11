@@ -14,7 +14,7 @@ class FavouriteButton extends PureComponent {
       <img
         style={style}
         alt="Hearth Icon"
-        src={`assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
+        src={`${process.env.PUBLIC_URL}/assets/${dark ? "dark" : "white"}/${resultImg}.svg`}
         className={`favourite ${className} ${
           resultImg === "full_hearth"
             ? "favourite--active"
