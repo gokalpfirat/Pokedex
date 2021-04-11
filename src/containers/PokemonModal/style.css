@@ -1,6 +1,7 @@
 .pokemon_modal {
   min-height: 400px;
-  width: 300px;
+  min-width: 260px;
+  max-width: 300px;
   padding: 1.5rem;
   border-radius: 0.625rem;
   display: flex;
